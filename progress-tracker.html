@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17191d">
+<title>WatchOut POS Modular — Progress Tracker</title>
+<style>
+:root{color-scheme:dark;--bg:#101216;--surface:#191c22;--surface2:#20242c;--border:#303641;--text:#f4f5f7;--muted:#a8afba;--accent:#ff4057;--green:#48c78e;--amber:#f4bd50;--blue:#7aa9ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;margin:auto;padding:26px 18px 56px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:var(--accent);font-weight:900;font-size:20px}.eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(24px,4vw,34px);line-height:1.15;margin:4px 0 0;letter-spacing:-.035em}.top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:9px 12px}.btn.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:700}.btn:hover{filter:brightness(1.12)}
+.hero{background:linear-gradient(120deg,#24212a,#1b1e25 60%,#2b1b21);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:16px}.hero-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.hero h2{margin:0 0 6px;font-size:22px}.hero p{margin:0;color:var(--muted);max-width:700px}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #65414a;color:#ffb3bc;border-radius:99px;padding:5px 9px;font-size:12px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.stat,.panel,.phase{background:var(--surface);border:1px solid var(--border);border-radius:14px}.stat{padding:15px}.stat .label{color:var(--muted);font-size:12px}.stat .num{font-size:27px;font-weight:750;letter-spacing:-.04em;margin-top:3px}.progress{height:8px;border-radius:99px;background:#343943;overflow:hidden;margin-top:14px}.progress span{display:block;height:100%;background:var(--accent);width:0%;transition:width .2s}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}.toolbar input,.toolbar select{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px}.toolbar input{flex:1;min-width:180px}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}.tag{font-size:11px;border-radius:99px;padding:4px 8px;border:1px solid var(--border);color:var(--muted)}.tag.done{color:var(--green);border-color:#286449}.tag.progressing{color:var(--blue);border-color:#334f83}.tag.blocked{color:var(--amber);border-color:#6d572c}
+.phase{margin:12px 0;overflow:hidden}.phase-head{display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;background:transparent;border:0;color:inherit;width:100%;text-align:left}.phase-head:hover{background:#ffffff05}.phase-num{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--surface2);color:var(--accent);font-weight:800;flex-shrink:0}.phase-title{font-weight:750;font-size:16px}.phase-sub{font-size:12px;color:var(--muted);margin-top:2px}.phase-count{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}.chevron{color:var(--muted);font-size:18px}.tasks{border-top:1px solid var(--border);padding:4px 16px 12px}.task{display:grid;grid-template-columns:22px minmax(0,1fr) 145px;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid #2b3038}.task:last-child{border-bottom:0}.task input[type=checkbox]{width:17px;height:17px;margin-top:3px;accent-color:var(--green)}.task-name{font-weight:620}.task-desc{color:var(--muted);font-size:12px;margin-top:3px}.task.done .task-name{text-decoration:line-through;color:#9aa19f}.status{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px;font-size:12px}.status:focus,.toolbar input:focus,.toolbar select:focus{outline:2px solid #ff405766;outline-offset:1px}.footer{color:var(--muted);font-size:12px;margin-top:22px}.notice{border:1px solid #5c4a29;background:#282419;color:#e7d5a6;border-radius:12px;padding:12px 14px;font-size:13px;margin-top:14px}
+@media(max-width:680px){.top{align-items:flex-start;flex-direction:column}.top-actions{width:100%}.top-actions .btn{flex:1}.hero-head{flex-direction:column}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.task{grid-template-columns:22px minmax(0,1fr)}.task .status{grid-column:2}.phase-count{display:none}.wrap{padding:18px 12px 42px}.tasks{padding:4px 12px 10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">W!</div><div><div class="eyebrow">WatchOut POS Modular</div><h1>Progress Tracker</h1></div></div>
+    <div class="top-actions">
+      <button class="btn" id="exportBtn">Export Markdown</button>
+      <button class="btn" id="resetBtn">Reset local progress</button>
+    </div>
+  </header>
+  <section class="hero">
+    <div class="hero-head"><div><h2>One checklist. The full journey.</h2><p>Track the work from architecture and foundation through core POS workflows, offline reliability, testing, pilot, and production. Update statuses as we verify each item.</p></div><span class="pill">● Local project tracker</span></div>
+    <div class="progress"><span id="overallBar"></span></div>
+  </section>
+  <section class="stats">
+    <div class="stat"><div class="label">Overall completion</div><div class="num" id="overallPct">0%</div></div>
+    <div class="stat"><div class="label">Completed tasks</div><div class="num" id="completedCount">0 / 0</div></div>
+    <div class="stat"><div class="label">In progress</div><div class="num" id="inProgressCount">0</div></div>
+    <div class="stat"><div class="label">Blocked</div><div class="num" id="blockedCount">0</div></div>
+  </section>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Search checklist, e.g. offline, receipts, inventory…" aria-label="Search tasks">
+    <select id="filter" aria-label="Filter tasks"><option value="all">All tasks</option><option value="pending">Pending</option><option value="in-progress">In progress</option><option value="blocked">Blocked</option><option value="done">Completed</option></select>
+    <div class="legend"><span class="tag done">Done</span><span class="tag progressing">In progress</span><span class="tag blocked">Blocked</span><span class="tag">Pending</span></div>
+  </div>
+  <main id="phases"></main>
+  <div class="notice"><strong>Important:</strong> this dashboard saves changes in this browser on this device. Use <em>Export Markdown</em> after updates, then replace <code>PROGRESS-TRACKER.md</code> in the project and commit it to Git. Browser storage is not a backup or shared sync service.</div>
+  <p class="footer">Status is intentionally conservative: only work already confirmed is marked done. Planned features are not treated as implemented. Review the actual app and tests before marking tasks complete.</p>
+</div>
+<script>
+const phases = [
+ {id:"foundation",title:"Project foundation & architecture",sub:"Repository, architecture decisions, developer workflow",tasks:[
+  ["foundation.docs","Architecture baseline documented","Architecture, module contracts, and development rules exist."],
+  ["foundation.git","Git repository and remote baseline established","Initial documentation baseline pushed to the project repository."],
+  ["foundation.scaffold","React + Vite + TypeScript scaffold installed","Dependencies installed in the new modular project."],
+  ["foundation.ignore","Local-data and secret ignore rules reviewed","Protect environment files, databases, build output, and local backups."],
+  ["foundation.quality","Build and lint checks pass","Latest shell changes passed both checks."],
+  ["foundation.shell","Responsive application shell created","Navigation and placeholder module screens exist; no POS business logic yet."],
+  ["foundation.visual","Review desktop and phone layout in browser","Still needs visual review and navigation/responsive checks."],
+  ["foundation.ci","Continuous integration checks configured and verified","Build/lint/test checks should run automatically on pull requests."]
+ ]},
+ {id:"design",title:"Product design & shared foundations",sub:"Reusable UI, data contracts, errors, validation",tasks:[
+  ["design.tokens","Finalize design tokens and responsive layout","Consistent typography, spacing, controls, mobile navigation."],
+  ["design.components","Build reusable form, table, dialog, search and empty-state components","Avoid duplicate one-off UI patterns."],
+  ["design.validation","Define shared validation and error-handling conventions","Readable errors; no silent failures."],
+  ["design.audit","Define audit-event and entity-ID conventions","Stable IDs and traceable changes."]
+ ]},
+ {id:"products",title:"Product master",sub:"Product setup, pricing, units, barcodes and sale eligibility",tasks:[
+  ["products.model","Define product data model and validation","Include product type, inventory mode and direct-sale eligibility."],
+  ["products.crud","Create, view, edit and deactivate products","Persist products reliably; prevent accidental data loss."],
+  ["products.pricing","Support price, tax, unit and discount rules","Document rounding and tax behavior."],
+  ["products.barcode","Support barcode/SKU search and lookup","Handle missing or duplicate identifiers."],
+  ["products.types","Implement Finished Good, Ingredient/Raw Material, Intermediate, Assembled","Match the agreed product type choices."],
+  ["products.inventory-mode","Implement Stocked, Made to Order, Batch Produced, Non-Stocked","Apply consistent inventory behavior per mode."],
+  ["products.direct-sale","Implement Available for direct sale checkbox","Validate that product setup controls sales eligibility."],
+  ["products.tests","Add product validation and CRUD tests","Include invalid data, duplicates and edit cases."]
+ ]},
+ {id:"sales",title:"Sales & receipts",sub:"Core cash-sale workflow and customer-facing output",tasks:[
+  ["sales.cart","Build product lookup, cart, quantity and line removal","Phone-first touch targets and clear totals."],
+  ["sales.pricing","Calculate subtotal, discounts, tax and grand total","Use tested decimal/rounding rules."],
+  ["sales.cash","Complete a cash sale with durable local transaction ID","Persist before showing local success."],
+  ["sales.receipt","Generate receipt view and print layout","Test common paper widths and browser printing."],
+  ["sales.void","Implement cancellation/void and correction rules","Keep audit trail; don't silently delete completed sales."],
+  ["sales.history","Show sale history and sale details","Search by date, receipt number and status."],
+  ["sales.tests","Test full sale flow and edge cases","Empty cart, repeated taps, refresh, failed persistence."]
+ ]},
+ {id:"inventory",title:"Inventory & stock movements",sub:"Opening stock, adjustments, consumption and reconciliation",tasks:[
+  ["inventory.model","Define stock ledger and inventory-event model","Auditable events rather than silent quantity overwrites."],
+  ["inventory.opening","Record opening stock","Validate quantities and units."],
+  ["inventory.adjust","Record additions, removals and corrections","Require reason and record who/when."],
+  ["inventory.sales","Deduct stock for eligible completed sales","Respect product inventory mode and cancellation rules."],
+  ["inventory.low-stock","Add configurable low-stock thresholds and view","Do not confuse offline estimate with authoritative stock."],
+  ["inventory.reconcile","Build stock reconciliation and discrepancy reporting","Flag stale/offline stock and potential overselling."]
+ ]},
+ {id:"purchases",title:"Purchases & suppliers",sub:"Receiving goods and traceable purchase records",tasks:[
+  ["purchases.suppliers","Create supplier records and lookup","Keep supplier data validated."],
+  ["purchases.entry","Record purchase and received quantities","Separate ordered from actually received quantity if needed."],
+  ["purchases.stock","Update stock through purchase inventory events","Prevent duplicate receiving on retry."],
+  ["purchases.history","Purchase history, details and cancellation flow","Retain auditability and correct stock reversals."]
+ ]},
+ {id:"customers",title:"Customers & business setup",sub:"Business profile, stores, customers and settings",tasks:[
+  ["business.profile","Business profile and receipt identity settings","Support the intended local-first launch."],
+  ["business.store","Store/location model and active store selection","Keep data model ready for multiple stores without promising live sync."],
+  ["customers.crud","Customer create/search/edit workflow","Keep optional customer flow fast for small shops."],
+  ["business.settings","Settings validation and durable persistence","No controls that appear saved when changes are not persisted."]
+ ]},
+ {id:"reports",title:"Reports & operational visibility",sub:"Sales, stock, purchases and exports",tasks:[
+  ["reports.sales","Daily/period sales summary","Verify totals against source transactions."],
+  ["reports.products","Product performance and sales detail","Define date range and tax/discount treatment."],
+  ["reports.inventory","Current stock, low stock and movement history","Show reconciliation warnings clearly."],
+  ["reports.purchases","Purchase and supplier summaries","Match source purchase records."],
+  ["reports.export","Export reports and validate exported data","Handle date filters, encoding and large result sets."]
+ ]},
+ {id:"security",title:"Users, roles & security",sub:"Access control, privacy and safe local operations",tasks:[
+  ["security.login","Implement login/session behavior appropriate to deployment","Do not rely on UI-only access hiding."],
+  ["security.roles","Implement owner/admin/manager/cashier permissions","Enforce permissions in backend/service boundaries where applicable."],
+  ["security.store-scope","Enforce business/store data boundaries","Never trust a client-supplied store ID without authorization."],
+  ["security.secrets","Review secrets, dependency and input handling","No secrets in frontend bundles or Git."],
+  ["security.audit","Audit important actions","User, time, entity, action and reason where appropriate."]
+ ]},
+ {id:"offline",title:"Offline-first storage & recovery",sub:"Local durable sales, queued sync design and data-loss protection",tasks:[
+  ["offline.storage","Implement storage abstraction with IndexedDB for browser data","Keep browser persistence behind a repository/service layer."],
+  ["offline.durable","Verify transactions survive refresh and browser restart","Do not report success before durable local save."],
+  ["offline.queue","Add explicit pending/failed/synchronized states for queued operations","Stable IDs and idempotent retry."],
+  ["offline.network","Handle offline/online transitions without losing work","No silent queue deletion or overwrite."],
+  ["offline.backup","Implement and test backup/restore and device-loss recovery","Browser local storage alone is not a backup."],
+  ["offline.reconcile","Show stale stock and reconcile after reconnect","Disconnected devices can oversell the same stock."],
+  ["offline.scope","Document what works offline vs online-only","Live payment verification and cloud-dependent actions require connectivity."]
+ ]},
+ {id:"testing",title:"Testing, quality & release readiness",sub:"Automated tests, usability, reliability and support",tasks:[
+  ["testing.unit","Unit tests for calculations, validation and permissions","Prioritize tax, discounts, totals and stock logic."],
+  ["testing.integration","Integration tests for persistence and service workflows","Include duplicate retries and failed writes."],
+  ["testing.e2e","End-to-end tests for core shop workflows","Product → sale → receipt → stock/report."],
+  ["testing.devices","Test phone, tablet and desktop layouts","Real devices and browser print behavior."],
+  ["testing.accessibility","Review keyboard, contrast, focus and readable errors","Accessible controls and touch targets."],
+  ["testing.security","Run security and dependency review","Fix high-severity findings before pilot."],
+  ["testing.recovery","Test backup restore, corrupted data and interrupted operations","Document recovery steps."],
+  ["testing.performance","Test realistic data volumes and slower devices","Avoid blocking main interactions."]
+ ]},
+ {id:"pilot",title:"Pilot & production launch",sub:"Real-shop validation, deployment, support and release gates",tasks:[
+  ["pilot.scope","Define pilot scope and acceptance criteria","Choose a small, representative shop workflow."],
+  ["pilot.data","Prepare safe test data and migration/import plan","No uncontrolled production data edits."],
+  ["pilot.training","Prepare setup guide, cashier guide and troubleshooting steps","Keep instructions suitable for non-technical shop owners."],
+  ["pilot.feedback","Run pilot and record issues with severity","Do not label unresolved critical issues as launch-ready."],
+  ["pilot.license","Finalize one-time licensing and activation approach","Commercial/legal decisions must be reviewed before sale."],
+  ["pilot.deploy","Set up production hosting/domain and secure configuration","Confirm costs, backups and operational ownership."],
+  ["pilot.monitor","Add crash/error diagnostics and support process","Protect customer and business data in logs."],
+  ["pilot.release","Complete go/no-go review and production checklist","Only after critical workflows and recovery are verified."]
+ ]},
+ {id:"later",title:"Later phase — cloud & multi-device sync",sub:"Deferred until the local-first product is stable",tasks:[
+  ["later.api","Design and secure cloud API/service","Server-side authorization and tenant isolation."],
+  ["later.sync","Implement conflict-aware sync and idempotent reconciliation","Define source of truth for every entity."],
+  ["later.multistore","Enable shared multi-store inventory and reporting","Do not promise cross-device sync until proven."],
+  ["later.payments","Evaluate payment-provider integrations","Never treat a client-side payment claim as verified."],
+  ["later.billing","Evaluate subscription/cloud operating costs if business model changes","Keep scope aligned with one-time licensing decision."]
+ ]}
+];
+const STORAGE_KEY="watchout-pos-modular-progress-v1";
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")||{}}catch(e){saved={}}
+const phasesRoot=document.getElementById("phases");
+const statusOf=id=>saved[id]?.status || "pending";
+function render(){
+ const q=document.getElementById("search").value.trim().toLowerCase();
+ const filter=document.getElementById("filter").value;
+ phasesRoot.innerHTML="";
+ let total=0,done=0,progress=0,blocked=0;
+ phases.forEach((phase,index)=>{
+   const tasks=phase.tasks.map(([id,name,desc])=>({id,name,desc,status:statusOf(id)}));
+   total+=tasks.length;done+=tasks.filter(t=>t.status==="done").length;progress+=tasks.filter(t=>t.status==="in-progress").length;blocked+=tasks.filter(t=>t.status==="blocked").length;
+   const visible=tasks.filter(t=>(!q||(t.name+" "+t.desc+" "+phase.title).toLowerCase().includes(q))&&(filter==="all"||t.status===filter));
+   if(!visible.length)return;
+   const phaseDone=tasks.filter(t=>t.status==="done").length;
+   const section=document.createElement("section");section.className="phase";
+   const head=document.createElement("button");head.className="phase-head";head.type="button";
+   head.innerHTML=`<span class="phase-num">${String(index+1).padStart(2,"0")}</span><span><span class="phase-title">${phase.title}</span><span class="phase-sub">${phase.sub}</span></span><span class="phase-count">${phaseDone}/${tasks.length} done</span><span class="chevron">⌄</span>`;
+   const body=document.createElement("div");body.className="tasks";
+   visible.forEach(t=>{
+     const row=document.createElement("div");row.className="task"+(t.status==="done"?" done":"");
+     const check=document.createElement("input");check.type="checkbox";check.checked=t.status==="done";check.setAttribute("aria-label","Mark "+t.name+" completed");
+     check.addEventListener("change",()=>{setStatus(t.id,check.checked?"done":"pending")});
+     const content=document.createElement("div");content.innerHTML=`<div class="task-name"></div><div class="task-desc"></div>`;content.querySelector(".task-name").textContent=t.name;content.querySelector(".task-desc").textContent=t.desc;
+     const select=document.createElement("select");select.className="status";select.setAttribute("aria-label","Status for "+t.name);
+     [["pending","Pending"],["in-progress","In progress"],["blocked","Blocked"],["done","Completed"]].forEach(([v,label])=>{const o=document.createElement("option");o.value=v;o.textContent=label;select.appendChild(o)});
+     select.value=t.status;select.addEventListener("change",()=>setStatus(t.id,select.value));
+     row.append(check,content,select);body.appendChild(row);
+   });
+   head.addEventListener("click",()=>{body.hidden=!body.hidden;head.querySelector(".chevron").textContent=body.hidden?"›":"⌄"});
+   section.append(head,body);phasesRoot.appendChild(section);
+ });
+ const pct=total?Math.round(done/total*100):0;
+ document.getElementById("overallPct").textContent=pct+"%";
+ document.getElementById("overallBar").style.width=pct+"%";
+ document.getElementById("completedCount").textContent=done+" / "+total;
+ document.getElementById("inProgressCount").textContent=progress;
+ document.getElementById("blockedCount").textContent=blocked;
+}
+function setStatus(id,status){saved[id]={...(saved[id]||{}),status,updatedAt:new Date().toISOString()};localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));render()}
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("filter").addEventListener("change",render);
+document.getElementById("resetBtn").addEventListener("click",()=>{if(confirm("Clear all checklist statuses saved in this browser? This does not change PROGRESS-TRACKER.md.")){saved={};localStorage.removeItem(STORAGE_KEY);render()}});
+document.getElementById("exportBtn").addEventListener("click",()=>{
+ let md="# WatchOut POS Modular — Progress Tracker\n\n";
+ md+="> Update this file as work is verified. The browser dashboard stores local status separately; use this export to bring your updates back into Git.\n\n";
+ md+="**Overall:** "+document.getElementById("overallPct").textContent+" completed based on checklist statuses at export time.\n\n";
+ phases.forEach((p,i)=>{md+=`## ${i+1}. ${p.title}\n\n`;md+=`_${p.sub}_\n\n`;p.tasks.forEach(([id,name,desc])=>{const s=statusOf(id);const mark=s==="done"?"x":" ";const label=s==="in-progress"?"**Status: In progress.** ":s==="blocked"?"**Status: BLOCKED.** ":"";md+=`- [${mark}] ${name} — ${label}${desc} \`ID: ${id}\`\n`});md+="\n"});
+ md+="## Status key\n\n- `[x]` Completed and verified\n- `[ ]` Pending\n- Use `**Status: In progress.**` or `**Status: BLOCKED.**` to distinguish work not yet complete.\n";
+ const blob=new Blob([md],{type:"text/markdown;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="PROGRESS-TRACKER.md";a.click();URL.revokeObjectURL(url);
+});
+render();
+</script>
+</body>
+</html>
