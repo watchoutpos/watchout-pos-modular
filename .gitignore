@@ -15,21 +15,36 @@ data/
 *.sqlite-journal
 
 # Logs and temporary files
-*.log
 logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 tmp/
 temp/
 
 # Build output
 dist/
+dist-ssr/
 build/
 coverage/
+
+# Local development overrides
+*.local
 
 # Operating system and editor files
 .DS_Store
 Thumbs.db
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Local certificates and private keys
 *.pem
@@ -37,5 +52,5 @@ Thumbs.db
 *.p12
 *.pfx
 
-# Local document backups (keep out of Git)
+# Local document backups
 docs/backups/
