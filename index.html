@@ -10,5 +10,67 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <script>
+/* WATCHOUT_UI_CONSISTENCY_PATCH_V1: Escape closes the topmost visible popup when possible. */
+(() => {
+  if (window.__watchoutEscapeHandlerInstalled) return;
+  window.__watchoutEscapeHandlerInstalled = true;
+
+  const isVisible = (element) => {
+    if (!(element instanceof HTMLElement)) return false;
+    const style = window.getComputedStyle(element);
+    return style.display !== "none" &&
+      style.visibility !== "hidden" &&
+      style.opacity !== "0" &&
+      element.getClientRects().length > 0;
+  };
+
+  const findTopmostPopup = () => {
+    const selectors = [
+      'dialog[open]',
+      '[role="dialog"]',
+      '[aria-modal="true"]',
+      '.modal',
+      '.modal-content',
+      '.modal-panel',
+      '.popup',
+      '.popup-content',
+      '.drawer-panel',
+      '.sheet-content'
+    ];
+    const candidates = Array.from(document.querySelectorAll(selectors.join(",")))
+      .filter(isVisible);
+    return candidates.length ? candidates[candidates.length - 1] : null;
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || event.defaultPrevented || event.isComposing) return;
+    const popup = findTopmostPopup();
+    if (!popup) return;
+
+    if (popup instanceof HTMLDialogElement && popup.open) {
+      popup.close();
+      event.preventDefault();
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      if (!isVisible(popup)) return;
+      const close = popup.querySelector([
+        'button[aria-label*="close" i]',
+        'button[title*="close" i]',
+        '[data-close]',
+        '[data-dismiss="modal"]',
+        '.close-button',
+        '.modal-close',
+        '.popup-close',
+        'button[aria-label="Ã—"]'
+      ].join(","));
+      if (close instanceof HTMLElement && isVisible(close)) close.click();
+    });
+  }, true);
+})();
+</script>
+</body>
 </html>
+

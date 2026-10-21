@@ -1,60 +1,323 @@
 ﻿:root {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #27282c;
-  background: #f8f8f9;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-optical-sizing: auto;
-  font-weight: 400;
-
-  --accent: #bd302b;
-  --text: #27282c;
-  --text-secondary: #55565d;
-  --muted: #81828a;
-  --border: #e9e9ec;
-  --surface: #ffffff;
-  --surface-subtle: #f7f7f8;
-
-  font-synthesis: none;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #E8EAF0;
+  background: #0B0C0E;
+  font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-optical-sizing: auto; font-weight: 400;
+  --bg: #0B0C0E; --surface: #17191D; --surface-raised: #1D2025; --surface-subtle: #202329;
+  --text: #E8EAF0; --text-secondary: #B4B8C2; --muted: #858B97; --border: #30343C;
+  --accent: #FFC914; --accent-strong: #E8B400; --gold: #D6A84F; --danger: #F02D3A; --success: #47C58A;
 }
+* { box-sizing: border-box; }
+html { min-width: 320px; min-height: 100%; background: var(--bg); -webkit-text-size-adjust: 100%; }
+body { min-width: 320px; min-height: 100vh; margin: 0; }
+button, input, select, textarea { font: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #FFC91499; outline-offset: 3px; }
+button { -webkit-tap-highlight-color: transparent; }
+::selection { background: #FFC914; color: #17191D; }
 
-* {
-  box-sizing: border-box;
+
+/* WATCHOUT_UI_CONSISTENCY_PATCH_V1
+   Temporary deployment-baseline: readable desktop typography, dark controls,
+   consistent contrast, and unified popup surfaces. Keep this block at file end.
+*/
+:root {
+  color-scheme: dark;
+  --wo-ui-font: Inter, "Segoe UI", Arial, sans-serif;
+  --wo-ui-font-size: 16px;
+  --wo-ui-control-bg: #242832;
+  --wo-ui-control-bg-hover: #303644;
+  --wo-ui-control-border: #596273;
+  --wo-ui-control-text: #f7f8fa;
+  --wo-ui-panel-bg: #20242c;
+  --wo-ui-panel-border: #596273;
+  --wo-ui-muted-text: #c2c8d2;
+  --wo-ui-focus: #f4c95d;
 }
 
 html {
-  min-width: 320px;
-  min-height: 100%;
-  background: #f8f8f9;
+  font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
-}
-
+body,
 button,
 input,
 select,
 textarea {
-  font: inherit;
+  font-family: var(--wo-ui-font);
+  font-size: var(--wo-ui-font-size);
 }
 
-button:focus-visible,
-a:focus-visible {
-  outline: 3px solid #d98d86;
-  outline-offset: 3px;
+body {
+  line-height: 1.5;
+}
+
+/* Bring common small text up to a readable laptop baseline. */
+small,
+small *,
+.helper-text,
+.help-text,
+.form-hint,
+.field-hint,
+.muted-text,
+.text-muted,
+.caption,
+.form-label,
+label {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+h1 { font-size: 28px; line-height: 1.25; }
+h2 { font-size: 24px; line-height: 1.3; }
+h3 { font-size: 20px; line-height: 1.35; }
+h4 { font-size: 18px; line-height: 1.4; }
+
+/* Native controls stay dark and legible on the POS dark workspace. */
+button,
+input,
+select,
+textarea,
+[role="button"],
+[role="combobox"],
+[role="listbox"] {
+  color: var(--wo-ui-control-text);
+}
+
+input,
+select,
+textarea {
+  background-color: var(--wo-ui-control-bg);
+  border-color: var(--wo-ui-control-border);
+  color-scheme: dark;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #b9c0cc;
+  opacity: 1;
+}
+
+select,
+select option,
+select optgroup {
+  background-color: var(--wo-ui-control-bg);
+  color: var(--wo-ui-control-text);
+}
+
+select option:checked,
+select option:hover {
+  background-color: #3a4352;
+  color: #ffffff;
 }
 
 button {
-  -webkit-tap-highlight-color: transparent;
+  min-height: 36px;
+  line-height: 1.35;
 }
 
-::selection {
-  background: #f5d5d1;
-  color: #27282c;
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[role="combobox"]:focus-visible {
+  outline: 2px solid var(--wo-ui-focus);
+  outline-offset: 2px;
+}
+
+/* Consistent contrast for common custom dropdowns, menus and popovers. */
+[role="listbox"],
+[role="menu"],
+[role="dialog"],
+[role="option"],
+[role="menuitem"],
+[data-radix-popper-content-wrapper],
+[data-state="open"][data-side],
+.dropdown-menu,
+.dropdown-content,
+.select-content,
+.select-menu,
+.popover,
+.popover-content,
+.autocomplete-list,
+.combobox-options,
+.context-menu {
+  color: var(--wo-ui-control-text);
+}
+
+[role="listbox"],
+[role="menu"],
+.dropdown-menu,
+.dropdown-content,
+.select-content,
+.select-menu,
+.popover-content,
+.autocomplete-list,
+.combobox-options,
+.context-menu {
+  background-color: var(--wo-ui-panel-bg);
+  border: 1px solid var(--wo-ui-panel-border);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 35%);
+}
+
+[role="option"],
+[role="menuitem"] {
+  color: var(--wo-ui-control-text);
+}
+
+[role="option"]:hover,
+[role="option"][aria-selected="true"],
+[role="menuitem"]:hover,
+.dropdown-item:hover {
+  background-color: var(--wo-ui-control-bg-hover);
+  color: #ffffff;
+}
+
+/* Modal/pop-up surfaces should contrast with the dark page, not disappear into it. */
+dialog,
+[role="dialog"],
+[aria-modal="true"],
+.modal,
+.modal-content,
+.modal-panel,
+.popup,
+.popup-content,
+.drawer-panel,
+.sheet-content {
+  color: #f7f8fa;
+}
+
+dialog,
+[role="dialog"],
+[aria-modal="true"],
+.modal-content,
+.modal-panel,
+.popup-content,
+.drawer-panel,
+.sheet-content {
+  background-color: #20242c;
+  border-color: #596273;
+}
+
+dialog::backdrop,
+.modal-backdrop,
+.popup-backdrop,
+[data-backdrop],
+[aria-hidden="true"].overlay {
+  background: rgb(0 0 0 / 72%);
+}
+
+/* Tables and secondary content retain contrast without forcing every panel white. */
+th {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+td {
+  font-size: 15px;
+}
+
+:disabled,
+[aria-disabled="true"] {
+  opacity: 0.68;
+}
+
+/* End WATCHOUT_UI_CONSISTENCY_PATCH_V1 */
+
+
+/* WATCHOUT_RESPONSIVE_LAYOUT_FIX_V1
+   Responsive viewport scrolling, modal scrolling, and accessible control contrast. */
+html {
+  min-height: 100%;
+  height: auto;
+  overflow-x: clip;
+  overflow-y: auto;
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  height: auto !important;
+  overflow-x: clip !important;
+  overflow-y: auto !important;
+}
+
+#root {
+  min-height: 100vh;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Common app shells must be allowed to grow beyond the viewport height. */
+.app, .app-shell, .app-layout, .app-container, .workspace, .workspace-shell,
+.workspace-layout, .main-layout, .page-layout, .main-content, .app-main,
+.workspace-main, .content-area, .page-content {
+  min-height: 100vh;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible;
+}
+
+/* Keep long pages and pop-up panels reachable on shorter laptop screens. */
+main, [role="main"] {
+  min-height: 0;
+  max-height: none;
+}
+[role="dialog"], dialog[open], .modal, .modal-content, .modal-panel,
+.modal-dialog, .overlay-panel, .sales-history-panel, .sales-history-modal,
+.purchase-history-panel {
+  box-sizing: border-box;
+  max-height: calc(100dvh - 24px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Dark controls need readable text and placeholders, including date filters. */
+input, select, textarea {
+  color: #f4f6fb;
+  caret-color: #f4f6fb;
+}
+input::placeholder, textarea::placeholder {
+  color: #aeb8c8;
+  opacity: 1;
+}
+select option, select optgroup {
+  color: #f4f6fb;
+  background-color: #20242d;
+}
+input[type="date"] {
+  color-scheme: dark;
+}
+button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, [role="button"]:focus-visible {
+  outline: 2px solid #f2c94c;
+  outline-offset: 2px;
+}
+
+/* Sidebar controls may wrap rather than force the page wider. */
+aside, .sidebar, .app-sidebar, .workspace-sidebar, nav {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .app-layout, .workspace-layout, .main-layout, .page-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  aside, .sidebar, .app-sidebar, .workspace-sidebar {
+    max-width: 100%;
+  }
+}
+
+/* Successful settings save */
+button.save-success-button,
+button.save-success-button:hover {
+  background: #16803c !important;
+  color: #ffffff !important;
+  border-color: #16803c !important;
 }

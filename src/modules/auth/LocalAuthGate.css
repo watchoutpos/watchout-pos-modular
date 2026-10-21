@@ -1,0 +1,15 @@
+.local-auth-shell{min-height:100vh;display:grid;place-items:center;padding:24px;background:#111318;color:#f6f6f6;font-family:Inter,system-ui,sans-serif}
+.local-auth-card{width:min(100%,440px);padding:32px;border:1px solid #353943;border-radius:18px;background:#1b1e25;box-shadow:0 18px 60px #0005}
+.local-auth-logo{display:block;width:min(240px,80%);height:auto;margin:0 auto 22px}
+.local-auth-eyebrow{font-size:11px;letter-spacing:.16em;color:#f0b5ca;font-weight:700}
+.local-auth-card h1{font-size:26px;line-height:1.2;margin:8px 0 12px}
+.local-auth-card p{color:#c4c7cf;line-height:1.55}
+.local-auth-card form{display:grid;gap:16px;margin:24px 0}
+.local-auth-card label{display:grid;gap:7px;font-size:13px;font-weight:600}
+.local-auth-card input{width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid #4b505d;border-radius:9px;background:#101217;color:#fff;font:inherit}
+.local-auth-card button,.local-auth-toolbar button{padding:12px 16px;border:0;border-radius:9px;background:#e7a7c0;color:#21151b;font-weight:700;cursor:pointer}
+.local-auth-card button:disabled{opacity:.6;cursor:wait}
+.local-auth-card small{color:#aeb2bd}
+.local-auth-error{padding:10px 12px;border-radius:8px;background:#49262c;color:#ffe3e7!important}
+.local-auth-toolbar{position:fixed;right:16px;top:12px;z-index:1000;display:flex;align-items:center;gap:12px;padding:8px 10px 8px 14px;border:1px solid #555;border-radius:10px;background:#20232bf2;color:#f6f6f6;font:12px system-ui,sans-serif;box-shadow:0 4px 20px #0003}
+.local-auth-toolbar button{padding:7px 10px}

@@ -1,18 +1,43 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
+import { MODULES } from './shared/config/modules'
+import type { ModuleId } from './shared/types/modules'
+import { ProductMaster } from './modules/products/ProductMaster'
+import { Inventory } from './modules/inventory/Inventory'
+import { Purchases } from './modules/purchases/Purchases'
+import { Sales } from './modules/sales/Sales'
+import { Reports } from './modules/reports/Reports'
+import { Business } from './modules/business/Business'
+import { Users } from './modules/users/Users'
 import './App.css'
 
-type ModuleId = 'sales' | 'products' | 'inventory' | 'purchases' | 'reports'
+const moduleSymbols: Record<ModuleId, string> = {
+  sales: '\u2194',
+  products: '\u25A6',
+  inventory: '\u25A4',
+  purchases: '\u002B',
+  reports: '\u25A5',
+  business: '\u2302',
+  users: '\u263A',
+}
 
-const modules: { id: ModuleId; label: string; symbol: string; description: string }[] = [
-  { id: 'sales', label: 'Sales', symbol: '↗', description: 'Create and manage customer sales.' },
-  { id: 'products', label: 'Products', symbol: '▦', description: 'Maintain product names, prices and sale settings.' },
-  { id: 'inventory', label: 'Inventory', symbol: '▤', description: 'Track stock levels and inventory movements.' },
-  { id: 'purchases', label: 'Purchases', symbol: '＋', description: 'Record supplier purchases and received stock.' },
-  { id: 'reports', label: 'Reports', symbol: '▥', description: 'Review sales, stock and business performance.' },
-]
+const modules = MODULES
+  .map((module) => ({
+    ...module,
+    symbol: moduleSymbols[module.id],
+  }))
 
 function App() {
-  const [activeModule, setActiveModule] = useState<ModuleId>('sales')
+  const [activeModule, setActiveModule] = useState<ModuleId>(() => {
+    const savedModule = localStorage.getItem('watchout-pos-active-module')
+    return savedModule && modules.some((item) => item.id === savedModule)
+      ? (savedModule as ModuleId)
+      : 'sales'
+  })
+
+  const navigateToModule = (moduleId: ModuleId) => {
+    setActiveModule(moduleId)
+    localStorage.setItem('watchout-pos-active-module', moduleId)
+  }
   const selectedModule = modules.find((item) => item.id === activeModule)!
 
   return (
@@ -21,40 +46,42 @@ function App() {
         <a className="brand" href="#home" aria-label="WatchOut home"
           onClick={(event) => {
             event.preventDefault()
-            setActiveModule('sales')
+            navigateToModule('sales')
           }}>
-          <span className="brand-mark">W<span>!</span></span>
-          <span className="brand-copy">
-            <strong>WATCHOUT</strong>
-            <small>POINT OF SALE</small>
-          </span>
+          <img
+            className="brand-logo"
+            src="/assets/watchout-pos-wide.png"
+            alt="WATCHOUT POS"
+          />
         </a>
 
-        <div className="workspace-label">WORKSPACE</div>
-        <div className="store-card">
-          <span className="store-icon">⌂</span>
-          <span className="store-copy">
-            <strong>Main Store</strong>
-            <small>Current workspace</small>
-          </span>
-          <span className="store-indicator" aria-label="Selected store" />
-        </div>
 
+        {/* WATCHOUT_NAV_GROUPS_V1 */}
         <nav className="primary-nav" aria-label="Main navigation">
-          <span className="nav-heading">BUSINESS</span>
-          {modules.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`nav-item ${activeModule === item.id ? 'active' : ''}`}
-              onClick={() => setActiveModule(item.id)}
-              aria-current={activeModule === item.id ? 'page' : undefined}
-            >
-              <span className="nav-symbol" aria-hidden="true">{item.symbol}</span>
-              <span>{item.label}</span>
-              {item.id !== 'sales' && <span className="planned-dot" title="Foundation planned" />}
-            </button>
-          ))}
+          {[
+            { label: 'DAILY OPERATIONS', ids: ['sales', 'products', 'inventory'] },
+            { label: 'PROCUREMENT', ids: ['purchases'] },
+            { label: 'MANAGEMENT', ids: ['reports', 'business', 'users'] },
+          ].map((group) => {
+            const items = modules.filter((item) => group.ids.includes(item.id))
+            return (
+              <div className="nav-group" key={group.label}>
+                <span className="nav-heading">{group.label}</span>
+                {items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`nav-item ${activeModule === item.id ? 'active' : ''}`}
+                    onClick={() => navigateToModule(item.id)}
+                    aria-current={activeModule === item.id ? 'page' : undefined}
+                  >
+                    <span className="nav-symbol" aria-hidden="true">{item.symbol}</span>
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            )
+          })}
         </nav>
 
         <div className="sidebar-footer">
@@ -69,8 +96,11 @@ function App() {
       <div className="main-column">
         <header className="topbar">
           <div className="mobile-brand">
-            <span className="brand-mark">W<span>!</span></span>
-            <strong>WATCHOUT</strong>
+            <img
+              className="mobile-brand-logo"
+              src="/assets/watchout-pos-wide.png"
+              alt="WATCHOUT POS"
+            />
           </div>
           <div className="breadcrumb">
             <span>Workspace</span>
@@ -97,81 +127,11 @@ function App() {
             <span className="stage-chip">INITIAL FOUNDATION</span>
           </div>
 
-          {activeModule === 'sales' ? (
-            <>
-              <section className="welcome-card">
-                <div className="welcome-copy">
-                  <span className="welcome-kicker">WELCOME TO WATCHOUT POS</span>
-                  <h2>Everyday business.<br />Made simpler.</h2>
-                  <p>
-                    Start with the essentials. Build your product catalogue first,
-                    then connect it to the sales and inventory workflow.
-                  </p>
-                  <button
-                    type="button"
-                    className="primary-button"
-                    onClick={() => setActiveModule('products')}
-                  >
-                    Explore Products <span aria-hidden="true">→</span>
-                  </button>
-                </div>
-                <div className="welcome-art" aria-hidden="true">
-                  <div className="art-ring ring-one" />
-                  <div className="art-ring ring-two" />
-                  <div className="art-card">
-                    <span className="art-logo">W<span>!</span></span>
-                    <span className="art-line long" />
-                    <span className="art-line short" />
-                    <span className="art-divider" />
-                    <span className="art-line medium" />
-                    <span className="art-line long" />
-                    <span className="art-total"><span>TOTAL</span><strong>₹ —</strong></span>
-                  </div>
-                  <span className="art-spark spark-one">✳</span>
-                  <span className="art-spark spark-two">✦</span>
-                </div>
-              </section>
+          <div hidden={activeModule !== 'products'}>
+            <ProductMaster />
+          </div>
 
-              <div className="section-heading">
-                <div>
-                  <h2>Your workspace</h2>
-                  <p>Core modules being established for the first release.</p>
-                </div>
-              </div>
-
-              <section className="module-grid" aria-label="POS modules">
-                {modules.filter((item) => item.id !== 'sales').map((item, index) => (
-                  <button
-                    className="module-card"
-                    type="button"
-                    key={item.id}
-                    onClick={() => setActiveModule(item.id)}
-                  >
-                    <span className={`module-icon module-icon-${index + 1}`} aria-hidden="true">
-                      {item.symbol}
-                    </span>
-                    <span className="module-card-title">{item.label}</span>
-                    <span className="module-card-description">{item.description}</span>
-                    <span className="module-card-footer">
-                      <span>View module</span><span aria-hidden="true">→</span>
-                    </span>
-                  </button>
-                ))}
-              </section>
-
-              <section className="notice-card">
-                <span className="notice-icon" aria-hidden="true">i</span>
-                <div>
-                  <strong>Implementation status</strong>
-                  <p>
-                    This is the initial interface only. Sales processing, persistent
-                    products, offline storage, login and synchronization are not
-                    implemented yet.
-                  </p>
-                </div>
-              </section>
-            </>
-          ) : (
+          {activeModule === 'sales' ? <Sales /> : activeModule === 'products' ? null : activeModule === 'inventory' ? <Inventory /> : activeModule === 'purchases' ? <Purchases /> : activeModule === 'reports' ? <Reports /> : activeModule === 'business' ? <Business /> : activeModule === 'users' ? <Users /> : (
             <section className="module-placeholder">
               <div className="placeholder-icon" aria-hidden="true">{selectedModule.symbol}</div>
               <span className="placeholder-label">MODULE FOUNDATION</span>
@@ -182,15 +142,15 @@ function App() {
                 The module workflow and data rules will be implemented and tested
                 before this area is treated as operational.
               </p>
-              <button type="button" className="secondary-button" onClick={() => setActiveModule('sales')}>
-                ← Back to workspace
+              <button type="button" className="secondary-button" onClick={() => navigateToModule('sales')}>
+                {String.fromCharCode(8592)} Back to workspace
               </button>
             </section>
           )}
 
           <footer className="page-footer">
-            <span>WATCHOUT POS · MODULAR EDITION</span>
-            <span>Foundation build · Not for live transactions</span>
+            <span>WATCHOUT POS - MODULAR EDITION</span>
+            <span>Foundation build - Not for live transactions</span>
           </footer>
         </main>
       </div>
@@ -201,7 +161,7 @@ function App() {
             key={item.id}
             type="button"
             className={`mobile-nav-item ${activeModule === item.id ? 'active' : ''}`}
-            onClick={() => setActiveModule(item.id)}
+            onClick={() => navigateToModule(item.id)}
             aria-current={activeModule === item.id ? 'page' : undefined}
           >
             <span aria-hidden="true">{item.symbol}</span>
@@ -214,3 +174,7 @@ function App() {
 }
 
 export default App
+
+
+
+

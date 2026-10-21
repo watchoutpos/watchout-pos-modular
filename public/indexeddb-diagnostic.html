@@ -1,0 +1,93 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WatchOut IndexedDB Diagnostic</title>
+  <style>
+    body { font: 15px system-ui; margin: 28px; background: #0B0C0E; color: #E8EAF0; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #17191D; padding: 18px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h2>WatchOut POS — Read-only Database Diagnostic</h2>
+  <p>This page reads existing browser IndexedDB records. It does not import or delete data.</p>
+  <pre id="result">Inspecting database…</pre>
+  <script>
+    (async () => {
+      const output = document.getElementById("result");
+      const target = "watchout-pos-modular";
+
+      try {
+        if (!indexedDB.databases) {
+          output.textContent = "This browser does not expose indexedDB.databases(). No database was opened.";
+          return;
+        }
+
+        const databases = await indexedDB.databases();
+        const info = databases.find(db => db.name === target);
+
+        if (!info) {
+          output.textContent = JSON.stringify({
+            targetDatabase: target,
+            status: "Database not found in this browser origin",
+            databasesVisible: databases.map(db => ({
+              name: db.name,
+              version: db.version
+            }))
+          }, null, 2);
+          return;
+        }
+
+        const request = indexedDB.open(target);
+        request.onerror = () => {
+          output.textContent = "Could not open the existing database: " + request.error;
+        };
+
+        request.onsuccess = () => {
+          const db = request.result;
+          const report = {
+            database: db.name,
+            version: db.version,
+            stores: Array.from(db.objectStoreNames),
+            products: null
+          };
+
+          if (!db.objectStoreNames.contains("products")) {
+            report.products = "No products object store exists";
+            output.textContent = JSON.stringify(report, null, 2);
+            db.close();
+            return;
+          }
+
+          const transaction = db.transaction("products", "readonly");
+          const getAll = transaction.objectStore("products").getAll();
+
+          getAll.onsuccess = () => {
+            const records = getAll.result || [];
+            report.productCountInBrowserDatabase = records.length;
+            report.businessIds = [...new Set(records.map(p => p.businessId ?? "(missing)"))];
+            report.sampleProducts = records.slice(0, 20).map(p => ({
+              id: p.id,
+              name: p.name,
+              sku: p.sku,
+              businessId: p.businessId,
+              inventoryMode: p.inventoryMode,
+              isActive: p.isActive
+            }));
+            output.textContent = JSON.stringify(report, null, 2);
+            db.close();
+          };
+
+          getAll.onerror = () => {
+            output.textContent = "Could not read products: " + getAll.error;
+            db.close();
+          };
+        };
+      } catch (error) {
+        output.textContent = String(error?.stack || error);
+      }
+    })();
+  </script>
+</body>
+</html>

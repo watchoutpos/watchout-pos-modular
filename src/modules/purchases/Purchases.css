@@ -1,0 +1,48 @@
+.purchases-workspace{display:grid;gap:20px;color:var(--text-primary,#f5f5f5)}
+.purchases-toolbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.purchases-eyebrow{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--text-muted,#999);margin:0 0 6px}
+.purchases-toolbar h2{margin:0;font-size:24px}
+.purchases-muted{color:var(--text-muted,#a5a5a5);font-size:13px}
+.purchases-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.purchases-tabs button,.purchases-secondary-button,.purchases-primary-button{border:1px solid var(--border-color,#414141);border-radius:9px;padding:10px 14px;background:transparent;color:inherit;cursor:pointer;font:inherit}
+.purchases-tabs button.active{background:#292929;border-color:#777}
+.purchases-primary-button{background:#f3f3f3;color:#171717;border-color:#f3f3f3;font-weight:700}
+.purchases-primary-button:disabled{opacity:.55;cursor:not-allowed}
+.purchases-scope{font-size:12px;color:var(--text-muted,#aaa);padding:10px 12px;border:1px solid var(--border-color,#393939);border-radius:9px}
+.purchases-form,.purchases-history{display:grid;gap:20px}
+.purchases-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.purchases-workspace label{display:grid;gap:7px;font-size:12px;color:var(--text-muted,#aaa)}
+.purchases-workspace input,.purchases-workspace select{width:100%;min-width:0;box-sizing:border-box;border:1px solid var(--border-color,#414141);border-radius:8px;padding:11px 12px;background:var(--surface,#202020);color:var(--text-primary,#f5f5f5);font:inherit}
+.purchases-add-line{display:grid;grid-template-columns:minmax(180px,2fr) minmax(90px,1fr) minmax(120px,1fr) auto;align-items:end;gap:12px}
+.purchases-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.purchases-section-heading h3{margin:0;font-size:16px}
+.purchases-section-heading span{font-size:12px;color:var(--text-muted,#aaa)}
+.purchases-table-wrap{overflow-x:auto;border:1px solid var(--border-color,#393939);border-radius:10px}
+.purchases-table{width:100%;border-collapse:collapse;font-size:13px}
+.purchases-table th,.purchases-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border-color,#343434);white-space:nowrap}
+.purchases-table th{color:var(--text-muted,#aaa);font-weight:600;background:var(--surface,#202020)}
+.purchases-table tr:last-child td{border-bottom:0}
+.purchases-empty,.purchases-empty-block{text-align:center;color:var(--text-muted,#aaa);padding:22px}
+.purchases-empty-block{border:1px dashed var(--border-color,#414141);border-radius:10px}
+.purchases-form-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.purchases-form-footer div{display:grid;gap:4px;color:var(--text-muted,#aaa);font-size:12px}
+.purchases-form-footer strong{font-size:20px;color:var(--text-primary,#f5f5f5)}
+.purchases-warning{margin:0;color:#e7c98a;font-size:12px}
+.purchases-error,.purchases-notice{margin:0;padding:11px 13px;border-radius:8px;font-size:13px}
+.purchases-error{color:#ffb4b4;background:#451f1f}
+.purchases-notice{color:#b8e8c3;background:#173a25}
+.purchases-remove{background:transparent;border:0;color:#ffb4b4;cursor:pointer}
+.purchases-status{display:inline-block;padding:4px 8px;border-radius:999px;background:#383838;font-size:11px;text-transform:capitalize}
+.status-draft{color:#f1d08c}.status-received{color:#b8e8c3}.status-cancelled{color:#ffb4b4}
+@media(max-width:760px){.purchases-fields{grid-template-columns:1fr}.purchases-add-line{grid-template-columns:1fr 1fr}.purchases-add-line label:first-child{grid-column:1/-1}.purchases-form-footer{align-items:stretch}.purchases-form-footer .purchases-primary-button{width:100%}}
+.status-receiving{color:#f1d08c}
+.purchases-receive-button{padding:8px 10px;font-size:12px;white-space:nowrap}
+
+/* Temporary confirmation state for successful saves. */
+.purchases-primary-button.save-success-button,
+.purchases-primary-button.save-success-button:hover {
+  background: #176b3a;
+  border-color: #35b86b;
+  color: #ffffff;
+  transform: none;
+}

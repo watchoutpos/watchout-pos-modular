@@ -42,7 +42,7 @@ button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;ma
   </div>
   <main id="phases"></main>
   <div class="notice"><strong>Important:</strong> this dashboard saves changes in this browser on this device. Use <em>Export Markdown</em> after updates, then replace <code>PROGRESS-TRACKER.md</code> in the project and commit it to Git. Browser storage is not a backup or shared sync service.</div>
-  <p class="footer">Status is intentionally conservative: only work already confirmed is marked done. Planned features are not treated as implemented. Review the actual app and tests before marking tasks complete.</p>
+  <p class="footer">Tracker updated 19 Oct 2026 from available test/build output and source inspection. Completed means implemented and verified; in-progress means partially implemented or not fully verified. This tracker is a project snapshot, not proof of production readiness.</p>
 </div>
 <script>
 const phases = [
@@ -51,45 +51,71 @@ const phases = [
   ["foundation.git","Git repository and remote baseline established","Initial documentation baseline pushed to the project repository."],
   ["foundation.scaffold","React + Vite + TypeScript scaffold installed","Dependencies installed in the new modular project."],
   ["foundation.ignore","Local-data and secret ignore rules reviewed","Protect environment files, databases, build output, and local backups."],
-  ["foundation.quality","Build and lint checks pass","Latest shell changes passed both checks."],
-  ["foundation.shell","Responsive application shell created","Navigation and placeholder module screens exist; no POS business logic yet."],
+  ["foundation.quality","Build and quality checks pass","Latest npm test run: 86 passed, 0 failed; production build passed. Lint status is not reverified in this latest run."],
+  ["foundation.shell","Responsive application shell created","Desktop app shell and core module navigation are visible; core workflows are still incomplete."],
   ["foundation.visual","Review desktop and phone layout in browser","Still needs visual review and navigation/responsive checks."],
   ["foundation.ci","Continuous integration checks configured and verified","Build/lint/test checks should run automatically on pull requests."]
  ]},
  {id:"design",title:"Product design & shared foundations",sub:"Reusable UI, data contracts, errors, validation",tasks:[
-  ["design.tokens","Finalize design tokens and responsive layout","Consistent typography, spacing, controls, mobile navigation."],
+  ["design.tokens","Apply approved premium charcoal/yellow theme","Use #0B0C0E, #17191D, #FFC914, #D6A84F and #F02D3A consistently across desktop and mobile."],
+  ["design.brand-assets","Integrate approved WATCHOUT POS logo","Wide logo in desktop sidebar and mobile header; stable assets under public/assets."],
+  ["design.brand-visual","Verify logo sizing and responsive behavior","Inspect logo proportions, transparency, contrast and phone layout in browser."],
+  ["design.brand-compact","Plan compact circular logo placement","Use the circular asset for future login and compact-brand contexts where appropriate."],
+  ["design.responsive-review","Review approved theme at desktop, tablet and phone widths","Verify navigation, contrast, focus states, form spacing and horizontal overflow in the browser."],
   ["design.components","Build reusable form, table, dialog, search and empty-state components","Avoid duplicate one-off UI patterns."],
   ["design.validation","Define shared validation and error-handling conventions","Readable errors; no silent failures."],
   ["design.audit","Define audit-event and entity-ID conventions","Stable IDs and traceable changes."]
  ]},
+ {id:"workspace",title:"Workspace & tenant foundations",sub:"Business/store setup and scoped local data",tasks:[
+  ["workspace.storage","Persist businesses and stores in IndexedDB","Workspace storage and create/select flows are implemented and exercised."],
+  ["workspace.selection","Persist selected business and store across refresh","Browser verification confirmed selection persists after refresh."],
+  ["workspace.identity","Use active workspace identity in module data access","Product Master and Inventory use the selected workspace identity; Purchases is scoped by business and store."],
+  ["workspace.auth","Replace development identity with real authentication and authorization","Current workspace is explicitly local-development-only, not login or access control."]
+ ]},
  {id:"products",title:"Product master",sub:"Product setup, pricing, units, barcodes and sale eligibility",tasks:[
   ["products.model","Define product data model and validation","Include product type, inventory mode and direct-sale eligibility."],
-  ["products.crud","Create, view, edit and deactivate products","Persist products reliably; prevent accidental data loss."],
-  ["products.pricing","Support price, tax, unit and discount rules","Document rounding and tax behavior."],
+  ["products.screen","Build responsive Product Master create/list screen","Product name, SKU, barcode, price, type, inventory mode, unit and availability controls."],
+  ["products.session-state","Add temporary in-session create, search and active/inactive toggle","Clearly label this as temporary; do not imply durable persistence."],
+  ["products.crud","Create, view, edit and deactivate products with reliable persistence","Product Master is workspace-scoped and a product is selectable in Purchases; full CRUD/migration edge-case coverage remains to verify."],
+  ["products.pricing","Support price, tax, unit and discount rules","Pricing engine tests/build/lint previously passed; UI integration and end-to-end manual verification remain open."],
   ["products.barcode","Support barcode/SKU search and lookup","Handle missing or duplicate identifiers."],
   ["products.types","Implement Finished Good, Ingredient/Raw Material, Intermediate, Assembled","Match the agreed product type choices."],
   ["products.inventory-mode","Implement Stocked, Made to Order, Batch Produced, Non-Stocked","Apply consistent inventory behavior per mode."],
   ["products.direct-sale","Implement Available for direct sale checkbox","Validate that product setup controls sales eligibility."],
   ["products.tests","Add product validation and CRUD tests","Include invalid data, duplicates and edit cases."]
  ]},
- {id:"sales",title:"Sales & receipts",sub:"Core cash-sale workflow and customer-facing output",tasks:[
-  ["sales.cart","Build product lookup, cart, quantity and line removal","Phone-first touch targets and clear totals."],
-  ["sales.pricing","Calculate subtotal, discounts, tax and grand total","Use tested decimal/rounding rules."],
-  ["sales.cash","Complete a cash sale with durable local transaction ID","Persist before showing local success."],
-  ["sales.receipt","Generate receipt view and print layout","Test common paper widths and browser printing."],
-  ["sales.void","Implement cancellation/void and correction rules","Keep audit trail; don't silently delete completed sales."],
-  ["sales.history","Show sale history and sale details","Search by date, receipt number and status."],
-  ["sales.tests","Test full sale flow and edge cases","Empty cart, repeated taps, refresh, failed persistence."]
+ {id:"sales",title:"Sales, invoices & receipts",sub:"Finish the local sale workflow, then add configurable invoice and thermal receipt output",tasks:[
+  ["sales.cart","Build product lookup, cart, quantity and line removal","Implemented and previously verified in browser; keep touch targets and clear totals."],
+  ["sales.pricing","Calculate subtotal, discounts, tax and grand total","Pricing engine tests/build passed; finish UI integration and verify displayed totals against saved sale."],
+  ["sales.integrity","Validate sale integrity and stock deduction coverage","Automated sales suite: 96 passed, 0 failed; production build passed. Keep regression coverage."],
+  ["sales.cash","Complete a cash sale with durable local transaction ID","Persist before showing local success; verify success/error behavior in browser without creating a diagnostic sale."],
+  ["sales.history","Show saved sale history and sale details","Load saved completed sales by active business/store; search by date, receipt number and status; verify refresh behavior."],
+  ["sales.void","Implement cancellation/void and correction rules","Keep an audit trail; define stock reversal behavior before enabling void."],
+  ["sales.invoice-model","Build invoice data from an actual saved sale","Use saved line snapshots, totals, discounts, tax and timestamp; never use an unsaved preview or hardcoded sample data."],
+  ["sales.invoice-settings","Persist business/store invoice and branding settings","Business name/address/contact/tax details, business logo, WATCHOUT logo, watermark, GST/non-GST format, print format and QR mode; follow existing configuration/storage patterns."],
+  ["sales.invoice-preview","Create responsive invoice print preview","Preview works on desktop, tablet/iPad and mobile; item rows and totals remain readable; watermark never obscures important content."],
+  ["sales.invoice-gst","Support configured GST and non-GST invoice presentation","Reuse saved tax values and existing pricing rules; confirm applicable tax treatment and required business details before claiming legal compliance."],
+  ["sales.invoice-qr","Add optional static or dynamic QR selection","QR can be disabled; static QR can be replaced; dynamic QR uses a defined provider/payload contract. Never fabricate payment confirmation."],
+  ["sales.receipt","Extend receipt view into invoice and print output","Reuse/consolidate the existing Reports receipt UI; provide browser print, sensible page margins and an 80 mm thermal layout with no clipping."],
+  ["sales.invoice-reprint","Retrieve and reprint saved invoices without side effects","Reprint must not create a sale, change totals, deduct stock or create a new invoice number."],
+  ["sales.tests","Test full sale, invoice and print workflows","Cover empty cart, repeated taps, persistence failures, refresh, totals/rounding, business/store isolation, QR modes and reprint regression."],
+  ["sales.invoice-legal-review","Confirm business-specific invoice and QR rules","Before production, confirm invoice numbering policy, GST/CGST/SGST/IGST treatment, static QR purpose and dynamic payment provider requirements."]
  ]},
  {id:"inventory",title:"Inventory & stock movements",sub:"Opening stock, adjustments, consumption and reconciliation",tasks:[
   ["inventory.model","Define stock ledger and inventory-event model","Auditable events rather than silent quantity overwrites."],
   ["inventory.opening","Record opening stock","Validate quantities and units."],
   ["inventory.adjust","Record additions, removals and corrections","Require reason and record who/when."],
+  ["inventory.movement-rules-tests","Test inventory movement rules","Unit tests cover quantity signs, invalid quantities, stock calculations and negative-stock protection."],
+  ["inventory.storage-tests","Test inventory IndexedDB transactions","PASS: 5 transaction tests; full suite 27 passed, 0 failed; build and lint passed."],
   ["inventory.sales","Deduct stock for eligible completed sales","Respect product inventory mode and cancellation rules."],
   ["inventory.low-stock","Add configurable low-stock thresholds and view","Do not confuse offline estimate with authoritative stock."],
   ["inventory.reconcile","Build stock reconciliation and discrepancy reporting","Flag stale/offline stock and potential overselling."]
  ]},
  {id:"purchases",title:"Purchases & suppliers",sub:"Receiving goods and traceable purchase records",tasks:[
+  ["purchases.storage","Persist purchase drafts with business/store scope","Draft storage and scope/status validation tests are implemented; draft save does not change stock."],
+  ["purchases.draft-ui","Create purchase draft from active products","Verified in browser: product dropdown, supplier fields, line totals and draft save."],
+  ["purchases.history-ui","Show purchase history for selected business/store","Verified in browser: saved draft appears in history with supplier, status and total."],
+  ["purchases.receive","Receive purchase and create stock movements atomically","Not implemented; stock must change only on explicit receiving, with duplicate-retry protection."],
   ["purchases.suppliers","Create supplier records and lookup","Keep supplier data validated."],
   ["purchases.entry","Record purchase and received quantities","Separate ordered from actually received quantity if needed."],
   ["purchases.stock","Update stock through purchase inventory events","Prevent duplicate receiving on retry."],
@@ -117,6 +143,7 @@ const phases = [
  ]},
  {id:"offline",title:"Offline-first storage & recovery",sub:"Local durable sales, queued sync design and data-loss protection",tasks:[
   ["offline.storage","Implement storage abstraction with IndexedDB for browser data","Keep browser persistence behind a repository/service layer."],
+  ["offline.product-persistence","Persist Product Master records through the storage abstraction","Products survive refresh, navigation and browser restart; test migration and failure handling."],
   ["offline.durable","Verify transactions survive refresh and browser restart","Do not report success before durable local save."],
   ["offline.queue","Add explicit pending/failed/synchronized states for queued operations","Stable IDs and idempotent retry."],
   ["offline.network","Handle offline/online transitions without losing work","No silent queue deletion or overwrite."],
@@ -156,7 +183,8 @@ const STORAGE_KEY="watchout-pos-modular-progress-v1";
 let saved={};
 try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")||{}}catch(e){saved={}}
 const phasesRoot=document.getElementById("phases");
-const statusOf=id=>saved[id]?.status || "pending";
+const DEFAULT_STATUSES={"foundation.docs":"done","foundation.git":"done","foundation.scaffold":"done","foundation.ignore":"done","foundation.quality":"done","foundation.shell":"done","foundation.visual":"in-progress","design.tokens":"done","design.brand-assets":"done","design.brand-visual":"in-progress","design.responsive-review":"in-progress","workspace.storage":"done","workspace.selection":"done","workspace.identity":"in-progress","products.model":"done","products.screen":"done","products.crud":"in-progress","products.types":"done","products.inventory-mode":"done","products.direct-sale":"done","products.tests":"in-progress","products.pricing":"in-progress","sales.cart":"done","sales.pricing":"in-progress","sales.integrity":"done","sales.cash":"in-progress","sales.history":"in-progress","sales.receipt":"in-progress","sales.invoice-model":"pending","sales.invoice-settings":"pending","sales.invoice-preview":"pending","sales.invoice-gst":"pending","sales.invoice-qr":"pending","sales.invoice-reprint":"pending","sales.tests":"in-progress","sales.invoice-legal-review":"pending","inventory.movement-rules-tests":"done","inventory.storage-tests":"done","purchases.storage":"done","purchases.draft-ui":"done","purchases.history-ui":"done","purchases.receive":"pending"};
+const statusOf=id=>saved[id]?.status || DEFAULT_STATUSES[id] || "pending";
 function render(){
  const q=document.getElementById("search").value.trim().toLowerCase();
  const filter=document.getElementById("filter").value;
@@ -206,5 +234,6 @@ document.getElementById("exportBtn").addEventListener("click",()=>{
 });
 render();
 </script>
+<!-- Sales Pricing Engine tests/build/lint passed 20261017-152419; full sales.pricing remains open until UI integration and manual verification. -->
 </body>
 </html>
